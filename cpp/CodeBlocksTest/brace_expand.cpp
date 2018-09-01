@@ -22,8 +22,8 @@ std::string BraceExpand::brace_expand(const std::string& input) {
   std::string result;
   for (size_t i = 0; i < elements.size(); i++) {
      result += elements[i];
-     if (i <= (elements.size() - 2)) {
-       result += ",";
+     if (i < (elements.size() - 2)) {
+       result += "^";
      }
    }
    return input + " -> " +result;
