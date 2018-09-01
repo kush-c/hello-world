@@ -11,7 +11,7 @@ std::string BraceExpand::brace_expand(const std::string& input) {
         if (curr.size() != 0) {
           elements.push_back(curr);
           curr = "";
-        }      
+        }
         break; // ignore for now
       default:
         curr += *itr;
@@ -22,7 +22,7 @@ std::string BraceExpand::brace_expand(const std::string& input) {
   std::string result;
   for (int i = 0; i < elements.size(); i++) {
      result += elements[i];
-     if (i != elements.size() - 1) {
+     if (i <= (elements.size() - 2)) {
        result += ",";
      }
    }
