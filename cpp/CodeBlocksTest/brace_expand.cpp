@@ -14,9 +14,11 @@ std::string BraceExpand::brace_expand(const std::string& input) {
         break;
       case '{':
       {
-        strvector brace_contents;
-        strvector brace_suffixes;
-        brace_contents_and_suffix(itr, brace_contents, brace_suffixes);
+        strvector contents = brace_contents(itr, input.cend());
+        for (const std::string& content : contents) {
+          elements.push_back(curr + content);
+        }
+        curr = "";
         break;
       }
       case '}':
@@ -38,7 +40,12 @@ std::string BraceExpand::brace_expand(const std::string& input) {
    return input + " -> " +result;
 }
 
-void BraceExpand::brace_contents_and_suffix(std::string::const_iterator& itr,
-    strvector& contents, strvector& brace_suffixes) {
+strvector BraceExpand::brace_contents(citr& itr, citr end) {
+  strvector v;
+  return v;
+}
 
+strvector BraceExpand::suffix_contents(citr& itr, citr end) {
+  strvector v;
+  return v;
 }
