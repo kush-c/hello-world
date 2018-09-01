@@ -6,4 +6,4 @@ brace_expand.o: brace_expand.c++ brace_expand.h
 	g++ -I . -c brace_expand.c++
 clean:
 	rm -rf *.o
-	rm target_bin
+	rm brace_expand
