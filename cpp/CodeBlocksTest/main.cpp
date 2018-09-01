@@ -2,11 +2,11 @@
 #include <brace_expand.h>
 
 int main(int argc, char const *argv[]) {
-  std::vector<std::string> cases = {
+  strvector cases = {
     //"{A,B,C}",
     //"{A,B}{C,D}",
-    //"{A,B{C,D}}",
-    "{ABC}",
+    "{A,B{C,D}}",
+    //"{ABC}",
     //"ABC"
   };
   BraceExpand b;

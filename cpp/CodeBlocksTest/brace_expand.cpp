@@ -1,18 +1,27 @@
+#include <iostream>
 #include <brace_expand.h>
 
 std::string BraceExpand::brace_expand(const std::string& input) {
-  std::vector<std::string> elements;
+  strvector elements;
   std::string curr;
   for(auto itr = input.cbegin(); itr != input.cend(); itr++) {
     switch(*itr) {
       case ',':
-      case '{':
-      case '}':
         if (curr.size() != 0) {
           elements.push_back(curr);
           curr = "";
         }
-        break; // ignore for now
+        break;
+      case '{':
+      {
+        strvector brace_contents;
+        strvector brace_suffixes;
+        brace_contents_and_suffix(itr, brace_contents, brace_suffixes);
+        break;
+      }
+      case '}':
+        std::cout << "THIS IS UNEXPECTED\n";
+        break;
       default:
         curr += *itr;
     }
@@ -29,7 +38,7 @@ std::string BraceExpand::brace_expand(const std::string& input) {
    return input + " -> " +result;
 }
 
-void BraceExpand::brace_contents_and_suffix(const std::string& input, const int& brace_loc,
-    std::vector<std::string>& contents, std::string& brace_suffix) {
+void BraceExpand::brace_contents_and_suffix(std::string::const_iterator& itr,
+    strvector& contents, strvector& brace_suffixes) {
 
 }
