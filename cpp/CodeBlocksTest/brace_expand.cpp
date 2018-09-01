@@ -20,7 +20,7 @@ std::string BraceExpand::brace_expand(const std::string& input) {
   elements.push_back(curr);
 
   std::string result;
-  for (int i = 0; i < elements.size(); i++) {
+  for (size_t i = 0; i < elements.size(); i++) {
      result += elements[i];
      if (i <= (elements.size() - 2)) {
        result += ",";
