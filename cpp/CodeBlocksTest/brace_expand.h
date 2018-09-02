@@ -9,7 +9,9 @@ typedef std::string::const_iterator citr;
 
 class BraceExpand {
 private:
-  strvector get_elements(citr& itr, citr end);
+  const strvector get_elements(citr& itr, citr end);
+  const strvector element_or_expansion(citr& itr, citr end);
+
 public:
   std::string brace_expand(const std::string& input);
 };

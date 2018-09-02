@@ -13,7 +13,7 @@ std::string BraceExpand::brace_expand(const std::string& input) {
    return input + " -> " +result;
 }
 
-strvector BraceExpand::get_elements(citr& itr, citr end) {
+const strvector BraceExpand::get_elements(citr& itr, citr end) {
   strvector elements;
   strvector suffixes;
   std::string curr;
@@ -45,4 +45,27 @@ strvector BraceExpand::get_elements(citr& itr, citr end) {
     }
   }
   return results;
+}
+
+const strvector BraceExpand::element_or_expansion(citr& itr, citr end) {
+  strvector result;
+  std::string prefix;
+  while(itr != end) {
+    if (',' == *itr) {
+      itr++;
+      result.push_back(prefix);
+      break;
+    } else if ('{' == *itr) {
+      itr++;
+      const strvector elements = get_elements(itr, end);
+      for (const std::string& elem : elements) {
+        result.push_back(prefix + elem);
+      }
+      break;
+    } else if ('}' == *itr) {
+      // We have to handle the Suffixes here.
+      // HOW DO WE DO THAT??
+    }
+  }
+  return result;
 }
