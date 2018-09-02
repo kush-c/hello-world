@@ -12,6 +12,7 @@ strvector BraceExpand::get_elements(const std::string& str, int& loc, const int 
   std::cout << "GE start_loc: " << start_loc << "\n";
   strvector elements;
   do {
+    std::cout << "EoE from GE" << start_loc << "\n";
     strvector expansion = element_or_expansion(str, loc, end);
     elements.insert(elements.end(), expansion.begin(), expansion.end());
   } while (loc < end && str[loc++] == ',');
@@ -29,17 +30,21 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
   while (loc < end) {
     if (',' == str[loc]) {
       // Finished processing this single element or expansion.
+      std::cout << "EoE encountered comma, prefix: " << prefix << ", elements: " << concat(elements) << " suffixes: " << concat(suffixes) << "\n";
       break;
     } else if ('{' == str[loc]) {
       loc++;
+      std::cout << "EoE calling GE, prefix " << prefix << ", loc: " << loc << "\n";
       elements = get_elements(str, loc, end);
     } else if ('}' == str[loc]) {
       loc++;
+      std::cout << "EoE calling EoE for suffixes, prefix " << prefix << ", loc: " << loc << ", elements: " << concat(elements) << "\n";
       suffixes = element_or_expansion(str, loc, end);
       break;
     } else {
       prefix += str[loc];
       loc++;
+      std::cout << "EoE new prefix: " << prefix << ", new loc: " << loc << "\n";
     }
   }
   strvector result;
@@ -51,7 +56,8 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
   if (result.size() == 0) {
     result.push_back(prefix);
   }
-  std::cout << "EoE start_loc: " << start_loc << " loc: " << loc << " elements: " << concat(result) << "\n";
+  std::cout << "EoE start_loc: " << start_loc << " loc: " << loc << ", prefix: " << prefix
+            << ", elements: " << concat(elements) << ", suffixes: " << concat(suffixes) << ", results:" << concat(result) << "\n";
   return result;
 }
 
