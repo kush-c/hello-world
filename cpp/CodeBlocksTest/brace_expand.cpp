@@ -15,8 +15,12 @@ std::string BraceExpand::brace_expand(const std::string& input) {
 }
 
 strvector BraceExpand::get_elements(const std::string& str, int& loc, const int end) {
-  strvector v;
-  return v;
+  strvector elements;
+  do {
+    strvector expansion = element_or_expansion(str, loc, end);
+    elements.insert(elements.end(), expansion.begin(), expansion.end());
+  } while (loc != end && str[loc++] == ',');
+  return elements;
 }
 
 // At least return a vector of a single null string.
@@ -24,9 +28,8 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
   strvector elements;
   strvector suffixes;
   std::string prefix;
-  while(loc != end) {
+  while (loc != end) {
     if (',' == str[loc]) {
-      loc++;
       break;
     } else if ('{' == str[loc]) {
       loc++;
