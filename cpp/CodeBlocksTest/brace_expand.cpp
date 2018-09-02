@@ -9,18 +9,20 @@ std::string BraceExpand::brace_expand(const std::string& input) {
 
 strvector BraceExpand::get_elements(const std::string& str, int& loc, const int end) {
   const int start_loc = loc;
+  std::cout << "GE start_loc: " << start_loc << "\n";
   strvector elements;
   do {
     strvector expansion = element_or_expansion(str, loc, end);
     elements.insert(elements.end(), expansion.begin(), expansion.end());
   } while (loc < end && str[loc++] == ',');
-  std::cout << "GE start_loc: " << start_loc << " loc: " << loc << " elements: " << concat(elements);
+  std::cout << "GE start_loc: " << start_loc << " loc: " << loc << " elements: " << concat(elements) << "\n";
   return elements;
 }
 
 // At least return a vector of a single null string.
 strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, const int end) {
   const int start_loc = loc;
+  std::cout << "EoE start_loc: " << start_loc << "\n";
   strvector elements;
   strvector suffixes;
   std::string prefix;
@@ -49,7 +51,7 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
   if (result.size() == 0) {
     result.push_back(prefix);
   }
-  std::cout << "EoE start_loc: " << start_loc << " loc: " << loc << " elements: " << concat(elements);
+  std::cout << "EoE start_loc: " << start_loc << " loc: " << loc << " elements: " << concat(result) << "\n";
   return result;
 }
 
