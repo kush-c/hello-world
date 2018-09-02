@@ -11,6 +11,7 @@ class BraceExpand {
 private:
   strvector get_elements(const std::string& str, int& loc, const int end);
   strvector element_or_expansion(const std::string& str, int& loc, const int end);
+  std::string concat(strvector elements);
 
 public:
   std::string brace_expand(const std::string& input);
