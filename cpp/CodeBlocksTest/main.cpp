@@ -3,8 +3,8 @@
 
 int main(int argc, char const *argv[]) {
   strvector cases = {
-    //"{A,B,C}",
-    "AB,C",
+    "{A,B}",
+    //"AB,C",
     //"{A,B}{C,D}",
     //"{A,B{C,D}}",
     //"{ABC}",
