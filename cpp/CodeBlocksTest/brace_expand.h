@@ -5,12 +5,12 @@
 #include <vector>
 
 typedef std::vector<std::string> strvector;
-typedef std::string::const_iterator citr;
+//typedef std::string::const_iterator citr;
 
 class BraceExpand {
 private:
-  const strvector get_elements(citr& itr, citr end);
-  const strvector element_or_expansion(citr& itr, citr end);
+  strvector get_elements(const std::string& str, int& loc, const int end);
+  strvector element_or_expansion(const std::string& str, int& loc, const int end);
 
 public:
   std::string brace_expand(const std::string& input);

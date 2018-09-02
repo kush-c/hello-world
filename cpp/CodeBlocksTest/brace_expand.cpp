@@ -2,7 +2,8 @@
 #include <brace_expand.h>
 
 std::string BraceExpand::brace_expand(const std::string& input) {
-  strvector elements = get_elements(input.cbegin(), input.cend());
+  int start_loc = 0;
+  strvector elements = get_elements(input, start_loc, input.size());
   std::string result;
   for (size_t i = 0; i < elements.size(); i++) {
      result += elements[i];
@@ -13,59 +14,40 @@ std::string BraceExpand::brace_expand(const std::string& input) {
    return input + " -> " +result;
 }
 
-const strvector BraceExpand::get_elements(citr& itr, citr end) {
-  strvector elements;
-  strvector suffixes;
-  std::string curr;
-
-  for(;itr != end; itr++) {
-    if (*itr == ',') {
-      if (curr.size() != 0) {
-        elements.push_back(curr);
-        curr = "";
-      }
-    } else if (*itr == '{') { // nested brace, we will ensure we process the closing brace internally.
-      strvector contents = brace_contents(++itr, input.cend());
-      for (const std::string& content : contents) {
-        elements.push_back(curr + content);
-      }
-      curr = "";
-    } else if (*itr == '}') {
-      suffixes = suffix_contents(++itr, end);
-      break;
-    } else {
-      curr += *itr;
-    }
-  }
-
-  strvector results;
-  for (const std::string& elem : elements) {
-    for (const std::string& suffix : suffixes) {
-      results.push_back(elem + suffix);
-    }
-  }
-  return results;
+strvector BraceExpand::get_elements(const std::string& str, int& loc, const int end) {
+  strvector v;
+  return v;
 }
 
-const strvector BraceExpand::element_or_expansion(citr& itr, citr end) {
-  strvector result;
+// At least return a vector of a single null string.
+strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, const int end) {
+  strvector elements;
+  strvector suffixes;
   std::string prefix;
-  while(itr != end) {
-    if (',' == *itr) {
-      itr++;
-      result.push_back(prefix);
+  while(loc != end) {
+    if (',' == str[loc]) {
+      loc++;
       break;
-    } else if ('{' == *itr) {
-      itr++;
-      const strvector elements = get_elements(itr, end);
-      for (const std::string& elem : elements) {
-        result.push_back(prefix + elem);
-      }
+    } else if ('{' == str[loc]) {
+      loc++;
+      elements = get_elements(str, loc, end);
+    } else if ('}' == str[loc]) {
+      loc++;
+      suffixes = element_or_expansion(str, loc, end);
       break;
-    } else if ('}' == *itr) {
-      // We have to handle the Suffixes here.
-      // HOW DO WE DO THAT??
+    } else {
+      prefix += str[loc];
+      loc++;
     }
+  }
+  strvector result;
+  for (const std::string& elem : elements) {
+    for (const std::string& suffix : suffixes) {
+      result.push_back(prefix + elem + suffix);
+    }
+  }
+  if (result.size() == 0) {
+    result.push_back(prefix);
   }
   return result;
 }
