@@ -9,10 +9,10 @@ std::string BraceExpand::brace_expand(const std::string& input) {
 
 strvector BraceExpand::get_elements(const std::string& str, int& loc, const int end) {
   const int start_loc = loc;
-  std::cout << "GE start_loc: " << start_loc << "\n";
+  std::cout << "GE start_loc: " << start_loc <<  ", end: " << end << "\n";
   strvector elements;
   do {
-    std::cout << "EoE from GE" << start_loc << "\n";
+    std::cout << "EoE from GE, loc: " << loc << "\n";
     strvector expansion = element_or_expansion(str, loc, end);
     elements.insert(elements.end(), expansion.begin(), expansion.end());
   } while (loc < end && str[loc++] == ',');
@@ -65,9 +65,9 @@ std::string BraceExpand::concat(strvector elements) {
   std::string result;
   for (size_t i = 0; i < elements.size(); i++) {
      result += elements[i];
-     if (i < (elements.size() - 2)) {
-       result += "^";
-     }
+     //if (i < (elements.size() - 2)) {
+       result += "+";
+     //}
    }
    return result;
 }
