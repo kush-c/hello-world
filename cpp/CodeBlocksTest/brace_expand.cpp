@@ -13,10 +13,9 @@ strvector BraceExpand::brace_expand(const std::string& input) {
 strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, const int end, bool outside_braces) {
   //const int start_loc = loc;
   //std::cout << "EoE start_loc: " << start_loc << ", stackPos: " << stackPos << "\n";
-  strvector elements;
-  strvector suffixes;
+  strvector elements, suffixes;
   std::string prefix;
-  bool found_opening_brace = false;
+  bool found_opening_brace = false, found_closing_brace = false;
   while (loc < end) {
     char curr = str[loc];
     if (('a' <= curr && curr <= 'z') || ('A' <= curr && curr <= 'Z')) {
@@ -39,6 +38,7 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
         // DO not process this closing brace, leave it to the function invocation which encountered the opening brace.
         break;
       }
+      found_closing_brace = true;
       loc++;
       //std::cout << "EoE calling EoE for suffixes, prefix " << prefix << ", loc: " << loc << ", stackPos: " << stackPos << ", elements: " << concat(elements) << "\n";
       suffixes = element_or_expansion(str, loc, end, outside_braces);
@@ -47,6 +47,9 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
       // Unexpected character
       return strvector();
     }
+  }
+  if (found_opening_brace && !found_closing_brace) {
+    return strvector();
   }
   strvector result;
   for (const std::string& elem : elements) {
@@ -63,10 +66,10 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
 }
 
 strvector BraceExpand::get_elements(const std::string& str, int& loc, const int end) {
-  const int start_loc = loc;
+  //const int start_loc = loc;
   //std::cout << "GE start_loc: " << start_loc <<  ", end: " << end << ", stackPos: " << stackPos <<  "\n";
   strvector elements;
-  do {
+  while (loc < end && '}' != str[loc]) {
     strvector expansion = element_or_expansion(str, loc, end, false);
     if (expansion.empty()) {
       // Invalid segment encountered.
@@ -74,18 +77,10 @@ strvector BraceExpand::get_elements(const std::string& str, int& loc, const int 
     }
     elements.insert(elements.end(), expansion.begin(), expansion.end());
     //std::cout << "GE Current loc: " << loc << ", current elements: " << concat(elements) << "\n";
-    char curr = str[loc];
-    if (',' == curr) {
+    if (',' == str[loc]) {
       loc++;
-    } else if ('}' == curr) {
-      break;
     }
-    // This seems really useless.
-//    else {
-//      // Unexpected character encountered.
-//      return strvector();
-//    }
-  } while (loc < end);
+  }
   //std::cout << "GE finished start_loc: " << start_loc << " loc: " << loc << " elements: " << concat(elements) << "\n";
   return elements;
 }
