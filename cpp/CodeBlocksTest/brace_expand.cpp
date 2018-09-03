@@ -12,7 +12,6 @@ strvector BraceExpand::get_elements(const std::string& str, int& loc, const int 
   std::cout << "GE start_loc: " << start_loc <<  ", end: " << end << ", stackPos: " << stackPos <<  "\n";
   strvector elements;
   while(true) {
-    //std::cout << "EoE from GE, loc: " << loc << "\n";
     strvector expansion = element_or_expansion(str, loc, end, stackPos + 1);
     elements.insert(elements.end(), expansion.begin(), expansion.end());
     std::cout << "GE Current loc: " << loc << ", current elements: " << concat(elements) << "\n";
