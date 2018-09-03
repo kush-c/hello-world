@@ -5,6 +5,7 @@ strvector BraceExpand::brace_expand(const std::string& input) {
   int start_loc = 0;
   strvector elements = element_or_expansion(input, start_loc, input.size(), true);
   if (elements.size() == 1 && elements[0].empty()) {
+    std::cout << "Fail location 1\n";
     return strvector();
   }
   return elements;
@@ -24,6 +25,7 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
     } else if (',' == curr) {
       if (outside_braces) {
         // commas invalid outside braces
+        std::cout << "Fail location 2\n";
         return strvector();
       }
       // Finished processing this single element or expansion.
@@ -44,15 +46,18 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
       suffixes = element_or_expansion(str, loc, end, outside_braces);
       if (suffixes.empty()) {
         // Invalid suffix found.
+        std::cout << "Fail location 3\n";
         return strvector();
       }
       break;
     } else {
       // Unexpected character
+      std::cout << "Fail location 4\n";
       return strvector();
     }
   }
   if (found_opening_brace && !found_closing_brace) {
+    std::cout << "Fail location 5\n";
     return strvector();
   }
   strvector result;
@@ -77,6 +82,7 @@ strvector BraceExpand::get_elements(const std::string& str, int& loc, const int 
     strvector expansion = element_or_expansion(str, loc, end, false);
     if (expansion.empty() || (expansion.size() == 1 && expansion[0].empty())) {
       // Invalid segment encountered.
+      std::cout << "Fail location 6\n";
       return strvector();
     }
     elements.insert(elements.end(), expansion.begin(), expansion.end());
@@ -86,6 +92,7 @@ strvector BraceExpand::get_elements(const std::string& str, int& loc, const int 
      } else if ('}' == str[loc]) {
       break;
     } else {
+      std::cout << "Fail location 7\n";
       return strvector();
     }
   }

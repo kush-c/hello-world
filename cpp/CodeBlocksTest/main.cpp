@@ -18,6 +18,9 @@ int main(int argc, char const *argv[]) {
     "{}",
     "A,B,C",
     "{A{B,C}",
+    "",
+    "A#B",
+    "A{B,C}D#"
   };
   BraceExpand b;
   for (const auto& str : cases) {
