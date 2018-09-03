@@ -5,14 +5,11 @@
 #include <vector>
 
 typedef std::vector<std::string> strvector;
-//typedef std::string::const_iterator citr;
 
 class BraceExpand {
 private:
   strvector element_or_expansion(const std::string& str, int& loc, const int end, bool outer_element);
   strvector get_elements(const std::string& str, int& loc, const int end);
-  std::string concat(strvector elements);
-
 public:
   strvector brace_expand(const std::string& input);
 };
