@@ -13,9 +13,12 @@ int main(int argc, char const *argv[]) {
     //"ABC"
   };
   BraceExpand b;
-  //std::cout << b.brace_expand("Hello, Ishu baby!!") << "\n";
   for (const auto& str : cases) {
-    std::cout << b.brace_expand(str) << "\n";
+    strvector expansion = b.brace_expand(str);
+    for (int i = 0; i < expansion.size(); ++i) {
+      const char suffix = i < (expansion.size() - 1) ? ' ' : '\n';
+      std::cout << expansion[i] << suffix;
+    }
   }
   return 0;
 }

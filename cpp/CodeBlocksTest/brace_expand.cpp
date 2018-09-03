@@ -1,10 +1,11 @@
 #include <iostream>
 #include <brace_expand.h>
 
-std::string BraceExpand::brace_expand(const std::string& input) {
+strvector BraceExpand::brace_expand(const std::string& input) {
   int start_loc = 0;
   strvector elements = element_or_expansion(input, start_loc, input.size(), true, 1);
-  return input + " -> " + concat(elements);
+  std::cout << input + " -> " + concat(elements) + "\n";
+  return elements;
 }
 
 strvector BraceExpand::get_elements(const std::string& str, int& loc, const int end, const int stackPos) {

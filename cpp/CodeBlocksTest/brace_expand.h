@@ -14,7 +14,7 @@ private:
   std::string concat(strvector elements);
 
 public:
-  std::string brace_expand(const std::string& input);
+  strvector brace_expand(const std::string& input);
 };
 
 #endif
