@@ -42,6 +42,10 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
       loc++;
       //std::cout << "EoE calling EoE for suffixes, prefix " << prefix << ", loc: " << loc << ", stackPos: " << stackPos << ", elements: " << concat(elements) << "\n";
       suffixes = element_or_expansion(str, loc, end, outside_braces);
+      if (suffixes.empty()) {
+        // Invalid suffix found.
+        return strvector();
+      }
       break;
     } else {
       // Unexpected character
@@ -69,7 +73,7 @@ strvector BraceExpand::get_elements(const std::string& str, int& loc, const int 
   //const int start_loc = loc;
   //std::cout << "GE start_loc: " << start_loc <<  ", end: " << end << ", stackPos: " << stackPos <<  "\n";
   strvector elements;
-  for (;loc < end && '}' != str[loc]; loc++) {
+  for (;loc < end; loc++) {
     strvector expansion = element_or_expansion(str, loc, end, false);
     if (expansion.empty() || (expansion.size() == 1 && expansion[0].empty())) {
       // Invalid segment encountered.
@@ -77,7 +81,11 @@ strvector BraceExpand::get_elements(const std::string& str, int& loc, const int 
     }
     elements.insert(elements.end(), expansion.begin(), expansion.end());
     //std::cout << "GE Current loc: " << loc << ", current elements: " << concat(elements) << "\n";
-    if (',' != str[loc]) {
+    if (',' == str[loc]) {
+      continue;
+     } else if ('}' == str[loc]) {
+      break;
+    } else {
       return strvector();
     }
   }
