@@ -12,7 +12,7 @@ int main(int argc, char const *argv[]) {
     "{ABC}",
     "ABC",
     "}ABC",
-    "{ABC",
+    "X{ABC",
     "}{",
     "{}",
     "A,B,C",

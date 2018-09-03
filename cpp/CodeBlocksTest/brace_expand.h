@@ -9,8 +9,8 @@ typedef std::vector<std::string> strvector;
 
 class BraceExpand {
 private:
-  strvector get_elements(const std::string& str, int& loc, const int end, const int stackPos);
-  strvector element_or_expansion(const std::string& str, int& loc, const int end, bool outer_element, const int stackPos);
+  strvector element_or_expansion(const std::string& str, int& loc, const int end, bool outer_element);
+  strvector get_elements(const std::string& str, int& loc, const int end);
   std::string concat(strvector elements);
 
 public:
