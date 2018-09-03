@@ -2,35 +2,47 @@
 #include <brace_expand.h>
 
 int main(int argc, char const *argv[]) {
-  strvector cases = {
-    "{A,B}",
-    "AB,C",
-    "AB,A{B,C{X,YZ}}D{E,F}",
-    "A{B,C{X,YZ}}D{E,F}",
-    "{A,B}{C,D}",
-    "{A,B{C,D}}",
-    "{ABC}",
-    "ABC",
-    "}ABC",
-    "X{ABC",
-    "{A,B,}",
-    "}{",
-    "{}",
-    "A,B,C",
-    "{A{B,C}",
-    "",
-    "A#B",
-    "A{B,C}D#"
+  std::vector<strvector> cases = {
+    {"{A,B}", "A B "},
+    {"AB,C"},
+    {"AB,A{B,C{X,YZ}}D{E,F}"},
+    {"A{B,C{X,YZ}}D{E,F}", "ABDE ABDF ACXDE ACXDF ACYZDE ACYZDF "},
+    {"{A,B}{C,D}", "AC AD BC BD "},
+    {"{A,B{C,D}}", "A BC BD "},
+    {"{ABC}", "ABC "},
+    {"ABC", "ABC "},
+    {"}ABC"},
+    {"X{ABC"},
+    {"{A,B,}"},
+    {"}{"},
+    {"{}"},
+    {"A,B,C"},
+    {"{A{B,C}"},
+    {""},
+    {"A#B"},
+    {"A{B,C}D#"},
   };
+  int pass = 0, fail = 0;
   BraceExpand b;
-  for (const auto& str : cases) {
-    std::cout << str << " -> ";
-    strvector expansion = b.brace_expand(str);
-    if (expansion.empty()) std::cout << "invalid input\n";
-    for (size_t i = 0; i < expansion.size(); ++i) {
-      const char suffix = i < (expansion.size() - 1) ? ' ' : '\n';
-      std::cout << expansion[i] << suffix;
+  for (const strvector& test_case : cases) {
+    std::string expected = test_case.size() == 2 ? test_case[1] : "%invalid%";
+    std::string actual;
+
+    strvector expansion = b.brace_expand(test_case[0]);
+    if (expansion.empty()) {
+      actual = "%invalid%";
+    } else {
+      for (const std::string& element : expansion) actual += (element + " ");
+    }
+    std::cout << "Test case: " << test_case[0] << " -> " << expected;
+    if (expected == actual) {
+      pass++;
+      std::cout << " : SUCCESS\n";
+    } else {
+      fail++;
+      std::cout << " : FAIL Got Result: " << actual << "\n";
     }
   }
-  return 0;
+  std::cout << "Finished Testing: " << pass << " Passed, " << fail << " Failed.\n";
+  return fail == 0 ? 0 : 1;
 }
