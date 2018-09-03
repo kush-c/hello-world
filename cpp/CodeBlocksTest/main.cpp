@@ -13,6 +13,7 @@ int main(int argc, char const *argv[]) {
     "ABC",
     "}ABC",
     "X{ABC",
+    "{A,B,}",
     "}{",
     "{}",
     "A,B,C",
