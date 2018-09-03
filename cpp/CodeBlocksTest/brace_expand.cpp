@@ -69,16 +69,16 @@ strvector BraceExpand::get_elements(const std::string& str, int& loc, const int 
   //const int start_loc = loc;
   //std::cout << "GE start_loc: " << start_loc <<  ", end: " << end << ", stackPos: " << stackPos <<  "\n";
   strvector elements;
-  while (loc < end && '}' != str[loc]) {
+  for (;loc < end && '}' != str[loc]; loc++) {
     strvector expansion = element_or_expansion(str, loc, end, false);
-    if (expansion.empty()) {
+    if (expansion.empty() || (expansion.size() == 1 && expansion[0].empty())) {
       // Invalid segment encountered.
       return strvector();
     }
     elements.insert(elements.end(), expansion.begin(), expansion.end());
     //std::cout << "GE Current loc: " << loc << ", current elements: " << concat(elements) << "\n";
-    if (',' == str[loc]) {
-      loc++;
+    if (',' != str[loc]) {
+      return strvector();
     }
   }
   //std::cout << "GE finished start_loc: " << start_loc << " loc: " << loc << " elements: " << concat(elements) << "\n";
