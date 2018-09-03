@@ -4,6 +4,9 @@
 strvector BraceExpand::brace_expand(const std::string& input) {
   int start_loc = 0;
   strvector elements = element_or_expansion(input, start_loc, input.size(), true, 1);
+  if (elements.size() == 1 && elements[0].empty()) {
+    return strvector();
+  }
   return elements;
 }
 
