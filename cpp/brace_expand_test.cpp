@@ -3,7 +3,18 @@
 
 int main(int argc, char const *argv[]) {
   std::vector<strvector> cases = {
+    {"{A,b}{d,E}", "Ad AE bd bE "},
     {"{A,B}", "A B "},
+    {"a{b,c}d", "abd acd "},
+    {"aB{{c,d},{c,d}e}f", "aBcf aBdf aBcef aBdef "},
+    {"A{,c,d}B",},
+    {"A{c,d}B", "AcB AdB "},
+    {"A,{c,d}B"},
+    {"A{c,d},B"},
+    {"A{c}B", "AcB "},
+    {"{{{{c,d}}e}}", "ce de "},
+    {"{ab,cd{e,f}}", "ab cde cdf "},
+    {"{}ab"},
     {"AB,C"},
     {"AB,A{B,C{X,YZ}}D{E,F}"},
     {"A{B,C{X,YZ}}D{E,F}", "ABDE ABDF ACXDE ACXDF ACYZDE ACYZDF "},
