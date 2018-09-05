@@ -32,6 +32,7 @@ int main(int argc, char const *argv[]) {
     {""},
     {"A#B"},
     {"A{B,C}D#"},
+    {"abc{c,d,e}}"},
   };
   int pass = 0, fail = 0;
   BraceExpand b;

@@ -32,14 +32,11 @@ strvector BraceExpand::expand_element(const std::string& str, int& loc) {
   strvector brace_elements, suffixes;
   std::string prefix;
   bool found_opening_brace = false, found_closing_brace = false;
-  while (loc < str.size()) {
+  while (loc < str.size() && str[loc] != ',') {
     char curr = str[loc];
     if (('a' <= curr && curr <= 'z') || ('A' <= curr && curr <= 'Z')) {
       prefix += curr;
       loc++;
-    } else if (',' == curr) {
-      // Finished processing this element.
-      break;
     } else if ('{' == curr) {
       found_opening_brace = true;
       // Get all the elements within the braces.
