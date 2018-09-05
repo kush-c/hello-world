@@ -8,7 +8,7 @@ typedef std::vector<std::string> strvector;
 
 class BraceExpand {
 private:
-  strvector element_or_expansion(const std::string& str, int& loc, const bool outside_braces);
+  strvector expand_element(const std::string& str, int& loc, const bool outside_braces);
   strvector get_brace_elements(const std::string& str, int& loc);
 public:
   // Expands the braces in the string and returns the expanded elements in a vector.
