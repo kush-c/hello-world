@@ -4,58 +4,56 @@ namespace {
   const strvector EMPTY_VECTOR_FOR_ERRORS;
 }
 
-// Expands the braces of the string by imitating a state machine, which processes parts (or elements)
-// within the input string.
-// Elements are parts of the input which may be partitioned by the comma *OUTSIDE* braces.
-// For Eg: "ab,cd" has 2 elements "ab" and "cd" but "a{b,c}" is considered a single complex element as the comma occurs within braces.
-// The state machine takes turns by enumerating the elements within braces, and then parsing and expanding individual elements
-// The "top-level" input string is considered to be a single complex element as no commas are allowed outside braces.
 strvector BraceExpand::brace_expand(const std::string& input) {
-  int start_loc = 0;
-  strvector elements = element_or_expansion(input, start_loc, input.size(), /*outside_braces=*/true);
+  int loc = 0;
+  strvector elements = expand_element(input, loc);
+  if (loc < input.size()) {
+    // only one element (without commas) is permitted at the top level.
+    return EMPTY_VECTOR_FOR_ERRORS;
+  }
   if (elements.size() == 1 && elements[0].empty()) {
     return EMPTY_VECTOR_FOR_ERRORS;
   }
   return elements;
 }
 
-// Expands a single element which may be simple or complex.
-// Simple elements such as "AC" expand to themselves.
-// This must be called with the in/out parameter loc being the index of the first char of the element to be parsed.
-// After this is done processing the in/out parameter loc points at:
-// 1: a comma,
-// 2: an ending brace which is not part of the current element, but part of a higher level complex element
-// or 3: end of string
-strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, const int end, const bool outside_braces) {
+// This method expands a single "element" of the input.
+// Conceptually elements are part (or whole) of the input which need to be expanded.
+// Elements are separated by commas ocurring at the same level.
+// For example in the string "AB,C{D,E}F" -> "AB" and "C{D,E}F" are the elements
+// The comma nested between braces does not split "C{D,E}F" into 2 elements as its not at the same "level".
+// Elements may be simple eg: "AB" or complex with one or more open/close braces eg: "A{B,C{D,E}}F{G,H}"
+// The complex element "A{B,C{D,E}}F{G,H}" has nested elements "B", "C{D,E}", "G" and "H".
+// This method returns when it finds a comma indicating the start of next element, or end of input.
+// This must be called with the in/out param loc pointing at the start index of the element.
+// When it returns the in/out parameter points to the index *after* the end of the lement which may be a comma
+// or the end of input.
+strvector BraceExpand::expand_element(const std::string& str, int& loc) {
   strvector brace_elements, suffixes;
   std::string prefix;
   bool found_opening_brace = false, found_closing_brace = false;
-  while (loc < end) {
+  while (loc < str.size()) {
     char curr = str[loc];
     if (('a' <= curr && curr <= 'z') || ('A' <= curr && curr <= 'Z')) {
       prefix += curr;
       loc++;
     } else if (',' == curr) {
-      if (outside_braces) {
-        // commas invalid outside braces
-        return EMPTY_VECTOR_FOR_ERRORS;
-      }
       // Finished processing this element.
       break;
     } else if ('{' == curr) {
       found_opening_brace = true;
       // Get all the elements within the braces.
-      brace_elements = get_brace_elements(str, ++loc, end);
+      brace_elements = get_brace_elements(str, ++loc);
     } else if ('}' == curr) {
       if (!found_opening_brace) {
         // DO not process this closing brace, leave it to the function invocation which encountered the opening brace.
         break;
       }
       found_closing_brace = true;
-      // Recursive call element_or_expansion to process the remainder of the element after braces
+      // Recursive call expand_element to process the remainder of the element after braces
       // If the suffix itself has expansions eg for element "{a,b}c{d,e}", the recursive call will be responsible
       // for parsing and expanding the suffix "c{d,e}"
-      suffixes = element_or_expansion(str, ++loc, end, outside_braces);
+      suffixes = expand_element(str, ++loc);
       if (suffixes.empty()) {
         return EMPTY_VECTOR_FOR_ERRORS;
       }
@@ -86,15 +84,14 @@ strvector BraceExpand::element_or_expansion(const std::string& str, int& loc, co
 }
 
 // Parses and returns all the expanded elements within braces.
-// It uses element_or_expansion to parse individual elements
-// Eg: This can parse {"AB", B{C,D"}} by using element_or_expansion to parse the individual
-// elements "AB" and "B{C,D}".
+// It uses expand_element to parse individual elements
+// Eg: This can parse "{AB,B{C,D}}" by using expand_element to parse the individual elements "AB" and "B{C,D}".
 // This must be called with the in/out parameter loc pointing to the index of the first char AFTER the opening brace
 // Upon returning the in/out parameter loc points to a closing brace.
-strvector BraceExpand::get_brace_elements(const std::string& str, int& loc, const int end) {
+strvector BraceExpand::get_brace_elements(const std::string& str, int& loc) {
   strvector elements;
-  for (;loc < end; loc++) {
-    strvector expansion = element_or_expansion(str, loc, end, /*outside_braces=*/false);
+  for (;loc < str.size(); loc++) {
+    strvector expansion = expand_element(str, loc);
     if (expansion.empty() || (expansion.size() == 1 && expansion[0].empty())) {
       return EMPTY_VECTOR_FOR_ERRORS;
     }
