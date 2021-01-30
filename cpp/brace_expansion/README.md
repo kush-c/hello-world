@@ -7,4 +7,5 @@
 2. `make all` will build everything with `brace_expand` being the main program. 
 3. `echo "<input>" | ./brace_expand` prints the output if valid.
 
-
+## Testing
+TODO
